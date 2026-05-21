@@ -27,7 +27,7 @@ public final class BlockPreDispenseListener extends Queue implements Listener {
     // Maximum time to keep entries in the cache (in milliseconds)
     private static final long CACHE_EXPIRY_TIME = 5000; // 5 seconds
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+  //  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPreDispense(BlockPreDispenseEvent event) {
         Block block = event.getBlock();
         World world = block.getWorld();

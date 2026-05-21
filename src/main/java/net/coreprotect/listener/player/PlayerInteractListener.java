@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.destroystokyo.paper.MaterialTags;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -72,6 +73,25 @@ public final class PlayerInteractListener extends Queue implements Listener {
     private final SignInspector signInspector = new SignInspector();
     private final ContainerInspector containerInspector = new ContainerInspector();
     private final InteractionInspector interactionInspector = new InteractionInspector();
+
+
+    private static final Set<Material> ENTITY_BLOCK_TYPES = EnumSet.of(
+            Material.ARMOR_STAND,
+            Material.END_CRYSTAL,
+            Material.BOW,
+            Material.CROSSBOW,
+            Material.TRIDENT,
+            Material.EXPERIENCE_BOTTLE,
+            Material.SPLASH_POTION,
+            Material.LINGERING_POTION,
+            Material.ENDER_PEARL,
+            Material.FIREWORK_ROCKET,
+            Material.EGG,
+            Material.WIND_CHARGE,
+            Material.BLUE_EGG,
+            Material.BROWN_EGG,
+            Material.SNOWBALL
+    );
 
     private static boolean containsItem(ItemStack itemStack) {
         return itemStack != null && itemStack.getType() != Material.AIR;
@@ -313,8 +333,6 @@ public final class PlayerInteractListener extends Queue implements Listener {
                     boolean isCake = false;
 
                     if (BukkitAdapter.ADAPTER.isSign(type)) {
-                        // check if right clicked sign with dye
-                        Set<Material> dyeSet = EnumSet.of(Material.BLACK_DYE, Material.BLUE_DYE, Material.BROWN_DYE, Material.CYAN_DYE, Material.GRAY_DYE, Material.GREEN_DYE, Material.LIGHT_BLUE_DYE, Material.LIGHT_GRAY_DYE, Material.LIME_DYE, Material.MAGENTA_DYE, Material.ORANGE_DYE, Material.PINK_DYE, Material.PURPLE_DYE, Material.RED_DYE, Material.WHITE_DYE, Material.YELLOW_DYE);
                         Material handType = null;
 
                         ItemStack mainHand = player.getInventory().getItemInMainHand();
@@ -322,7 +340,7 @@ public final class PlayerInteractListener extends Queue implements Listener {
                             handType = mainHand.getType();
                         }
 
-                        if (handType != null && (dyeSet.contains(handType) || handType.name().endsWith("INK_SAC") || handType == Material.HONEYCOMB) && Config.getConfig(block.getWorld()).SIGN_TEXT) {
+                        if (handType != null && (MaterialTags.DYES.isTagged(handType) || handType.name().endsWith("INK_SAC") || handType == Material.HONEYCOMB) && Config.getConfig(block.getWorld()).SIGN_TEXT) {
                             BlockState blockState = block.getState();
                             Sign sign = (Sign) blockState;
                             String line1 = PaperAdapter.ADAPTER.getLine(sign, 0);
@@ -652,23 +670,14 @@ public final class PlayerInteractListener extends Queue implements Listener {
             }
 
             if (event.useItemInHand() != Event.Result.DENY) {
-                List<Material> entityBlockTypes = new ArrayList<>(Arrays.asList(Material.ARMOR_STAND, Material.END_CRYSTAL, Material.BOW, Material.CROSSBOW, Material.TRIDENT, Material.EXPERIENCE_BOTTLE, Material.SPLASH_POTION, Material.LINGERING_POTION, Material.ENDER_PEARL, Material.FIREWORK_ROCKET, Material.EGG, Material.SNOWBALL));
-                try {
-                    entityBlockTypes.add(Material.valueOf("WIND_CHARGE"));
-                    entityBlockTypes.add(Material.valueOf("BLUE_EGG"));
-                    entityBlockTypes.add(Material.valueOf("BROWN_EGG"));
-                }
-                catch (Exception e) {
-                    // not running MC 1.21+
-                }
                 ItemStack handItem = null;
                 ItemStack mainHand = player.getInventory().getItemInMainHand();
                 ItemStack offHand = player.getInventory().getItemInOffHand();
 
-                if (event.getHand().equals(EquipmentSlot.HAND) && mainHand != null && entityBlockTypes.contains(mainHand.getType())) {
+                if (event.getHand().equals(EquipmentSlot.HAND) && mainHand != null && ENTITY_BLOCK_TYPES.contains(mainHand.getType())) {
                     handItem = mainHand;
                 }
-                else if (event.getHand().equals(EquipmentSlot.OFF_HAND) && offHand != null && entityBlockTypes.contains(offHand.getType())) {
+                else if (event.getHand().equals(EquipmentSlot.OFF_HAND) && offHand != null && ENTITY_BLOCK_TYPES.contains(offHand.getType())) {
                     handItem = offHand;
                 }
                 else {

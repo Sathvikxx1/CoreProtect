@@ -25,7 +25,7 @@ public final class BlockFertilizeListener extends Queue implements Listener {
     private static final int BONEMEAL_DUPLICATE_THRESHOLD = 256;
     private static final int BONEMEAL_DUPLICATE_WINDOW_SECONDS = 900;
 
-    @EventHandler(priority = EventPriority.MONITOR)
+   // @EventHandler(priority = EventPriority.MONITOR)
     protected void onBlockFertilize(BlockFertilizeEvent event) {
         if (event.isCancelled()) {
             return;

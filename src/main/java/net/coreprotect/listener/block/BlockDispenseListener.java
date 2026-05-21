@@ -31,7 +31,7 @@ public final class BlockDispenseListener extends Queue implements Listener {
     private static final int DISPENSER_LIQUID_DUPLICATE_THRESHOLD = 256;
     private static final int DISPENSER_LIQUID_DUPLICATE_WINDOW_SECONDS = 1200;
 
-    @EventHandler(priority = EventPriority.MONITOR)
+   // @EventHandler(priority = EventPriority.MONITOR)
     protected void onBlockDispense(BlockDispenseEvent event) {
         Block block = event.getBlock();
         World world = block.getWorld();
